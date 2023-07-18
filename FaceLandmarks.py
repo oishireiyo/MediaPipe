@@ -96,7 +96,7 @@ class FaceLandmark(object):
     def CheckOneFrame(self, iframe: int):
         self.inputvideo.set(cv2.CAP_PROP_POS_FRAMES, iframe)
         ret, frame = self.inputvideo.read()
-        logger.info('Frame: %4d, read frame: %s' % (iframe, ret))
+        logger.info('Frame: %4d / %d, read frame: %s' % (iframe, self.length, ret))
         if ret:
             mp_frame = mp.Image(image_format = mp.ImageFormat.SRGB, data = frame)
             results = self.landmarker.detect_for_video(mp_frame, iframe)
