@@ -161,4 +161,4 @@ cython_debug/
 
 # Media-Pipe
 *.task
-*.tfile
+*.tflite
