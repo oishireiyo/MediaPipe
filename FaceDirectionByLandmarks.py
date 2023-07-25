@@ -52,54 +52,47 @@ class FaceDirection(object):
 
     def result_callback(self, result: mp.tasks.vision.FaceLandmarkerResult,
                         utput_image: mp.Image, timestamp_ms: int):
-        
-        logger.info(result)
-
         self.landmarks = result.face_landmarks
         self.blendshapes = result.face_blendshapes
 
     def decorate_frame(self, frame):
+        if not self.landmarks is None:
+            face_landmarks_list = self.landmarks
 
-        logger.info(self.landmarks)
+            # Loop through the detected faces
+            for face_landmarks in face_landmarks_list:
 
-        return frame
+                # Draw the face landmarks
+                face_landmarks_proto = landmark_pb2.NormalizedLandmarkList()
+                face_landmarks_proto.landmark.extend([
+                    landmark_pb2.NormalizedLandmark(
+                        x = landmark.x, y = landmark.y, z = landmark.z
+                    ) for landmark in face_landmarks
+                ])
 
-        face_landmarks_list = self.landmarks
+                solutions.drawing_utils.draw_landmarks(
+                    image = frame,
+                    landmark_list = face_landmarks_proto,
+                    connections = solutions.face_mesh.FACEMESH_TESSELATION,
+                    landmark_drawing_spec = None,
+                    connection_drawing_spec = solutions.drawing_styles.get_default_face_mesh_tesselation_style(),
+                )
 
-        # Loop through the detected faces
-        for face_landmarks in face_landmarks_list:
+                solutions.drawing_utils.draw_landmarks(
+                    image = frame,
+                    landmark_list = face_landmarks_proto,
+                    connections = solutions.face_mesh.FACEMESH_CONTOURS,
+                    landmark_drawing_spec = None,
+                    connection_drawing_spec = solutions.drawing_styles.get_default_face_mesh_contours_style(),
+                )
 
-            # Draw the face landmarks
-            face_landmarks_proto = landmark_pb2.NormalizedLandmarkList()
-            face_landmarks_proto.landmark.extend([
-                landmark_pb2.NormalizedLandmark(
-                    x = landmark.x, y = landmark.y, z = landmark.z
-                ) for landmark in face_landmarks
-            ])
-
-            solutions.drawing_utils.draw_landmarks(
-                image = frame,
-                landmark_list = face_landmarks_proto,
-                connections = solutions.face_mesh.FACEMESH_TESSELATION,
-                landmark_drawing_spec = None,
-                connection_drawing_spec = solutions.drawing_styles.get_default_face_mesh_tesselation_style(),
-            )
-
-            solutions.drawing_utils.draw_landmarks(
-                image = frame,
-                landmark_list = face_landmarks_proto,
-                connections = solutions.face_mesh.FACEMESH_CONTOURS,
-                landmark_drawing_spec = None,
-                connection_drawing_spec = solutions.drawing_styles.get_default_face_mesh_contours_style(),
-            )
-
-            solutions.drawing_utils.draw_landmarks(
-                image = frame,
-                landmark_list = face_landmarks_proto,
-                connection = solutions.face_mesh.FACEMESH_IRISES,
-                landmark_drawing_spec = None,
-                connection_drawing_spec = solutions.drawing_styles.get_default_face_mesh_iris_connections_style(),
-            )
+                solutions.drawing_utils.draw_landmarks(
+                    image = frame,
+                    landmark_list = face_landmarks_proto,
+                    connections = solutions.face_mesh.FACEMESH_IRISES,
+                    landmark_drawing_spec = None,
+                    connection_drawing_spec = solutions.drawing_styles.get_default_face_mesh_iris_connections_style(),
+                )
 
         return frame
 
@@ -120,8 +113,6 @@ class FaceDirection(object):
             cv2.imshow('frame', frame)
             if (cv2.waitKey(1) & 0xFF == ord('q')): break
             iframe += 1
-            if iframe == 2:
-                break
 
     def release_all(self) -> None:
         cv2.destroyAllWindows()
