@@ -22,7 +22,7 @@ import numpy as np
 
 class FaceDirection(object):
     def __init__(self) -> None:
-        # Input video attributes
+        # Input video attributesxw
         self.capture = cv2.VideoCapture(1)
         if self.capture.isOpened():
             logger.info('Video is read.')
