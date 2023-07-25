@@ -123,8 +123,8 @@ class FaceLandmark(object):
 if __name__ == '__main__':
     start_time = time.time()
 
-    inputvideo = 'Inputs/Solokatsu.mp4'
-    outputvideo = 'Outputs/Solokatsu_FaceLandmarker.mp4'
+    inputvideo = '../Inputs/Videos/Solokatsu.mp4'
+    outputvideo = '../Outputs/Videos/Solokatsu_FaceLandmarker.mp4'
 
     Landmarker = FaceLandmark(inputvideo=inputvideo, outputvideo=outputvideo)
     Landmarker.CheckAllFrames()
