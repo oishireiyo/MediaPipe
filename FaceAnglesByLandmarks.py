@@ -70,7 +70,7 @@ class MediaPipePnP(object):
         self.distortion_matrix = np.zeros((4, 1))
 
     def _parse_canonical_facial_points_3d(self):
-        logger.info('Parse canonical facial 3D points.')
+        logger.debug('Parse canonical facial 3D points.')
         with open(self.facial_point_file, mode = 'r') as f:
             lines = f.readlines()
             for line in lines:
@@ -82,7 +82,7 @@ class MediaPipePnP(object):
                          float(elements[3].replace('\n', '')))
 
     def parse_detected_facial_points_2d(self, landmarks):
-        logger.info('Parse detected facial 2D points.')
+        logger.debug('Parse detected facial 2D points.')
         self.facial_points_2d = {}
         for i_landmark, landmark in enumerate(landmarks):
             self.facial_points_2d[i_landmark] = \
@@ -205,6 +205,15 @@ class FaceLandmarkForVideo(object):
             (int(projected_points_2d_cal[2][0][0] + diff_x), int(projected_points_2d_cal[2][0][1] + diff_y)),
             COLOR_RED, 4
         )
+
+        # Drawing projected origin
+        given_points_3d = np.array([
+            (0, 0, 0),
+        ], dtype = np.float32)
+        projected_points_2d_cal = self.PnP.project_given_points(points_3d = given_points_3d)
+        for p in projected_points_2d_cal:
+            cv2.circle(
+                frame, (int(p[0][0]), int(p[0][1])), 3, COLOR_YELLOW, 2)
 
     def check_one_frame(self, iframe: int):
         self.input_video.set(cv2.CAP_PROP_POS_FRAMES, iframe)
