@@ -165,3 +165,4 @@ cython_debug/
 
 # canonical facial features
 canonical_face_model/canonical_face_model.obj
+canonical_face_model/mesh_map.jpg
