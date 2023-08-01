@@ -114,15 +114,12 @@ class FaceLandmarkForVideo(object):
             (int(projected_points_2d_cal[2][0][0] + diff_x), int(projected_points_2d_cal[2][0][1] + diff_y)),
             COLOR_RED, 4
         )
+        cv2.circle(frame, (int(projected_points_2d_cal[3][0][0]), int(projected_points_2d_cal[3][0][1])), 3, COLOR_YELLOW, 2)
 
-        # Drawing projected origin
-        given_points_3d = np.array([
-            (0, 0, 0),
-        ], dtype = np.float32)
-        projected_points_2d_cal = self.PnP.project_given_points(points_3d = given_points_3d)
-        for p in projected_points_2d_cal:
-            cv2.circle(
-                frame, (int(p[0][0]), int(p[0][1])), 3, COLOR_YELLOW, 2)
+        pitch, yaw, roll = self.PnP.get_roll_pitch_yaw()
+        cv2.putText(frame, 'Pitch : %.4f' % (pitch), (10, 30),  cv2.FONT_HERSHEY_SIMPLEX, 1, COLOR_BLACK, thickness=2, lineType=2)
+        cv2.putText(frame, 'Yaw   : %.4f' % (yaw),   (10, 80),  cv2.FONT_HERSHEY_SIMPLEX, 1, COLOR_BLACK, thickness=2, lineType=2)
+        cv2.putText(frame, 'Roll  : %.4f' % (roll),  (10, 130), cv2.FONT_HERSHEY_SIMPLEX, 1, COLOR_BLACK, thickness=2, lineType=2)
 
     def check_one_frame(self, iframe: int):
         self.input_video.set(cv2.CAP_PROP_POS_FRAMES, iframe)
@@ -223,17 +220,12 @@ class FaceLandmarkForImage(object):
             (int(projected_points_2d_cal[2][0][0] + diff_x), int(projected_points_2d_cal[2][0][1] + diff_y)),
             COLOR_RED, 4
         )
+        cv2.circle(frame, (int(projected_points_2d_cal[3][0][0]), int(projected_points_2d_cal[3][0][1])), 3, COLOR_YELLOW, 2)
 
-        roll, pitch, yaw = self.PnP.get_roll_pitch_yaw()
-        cv2.putText(
-            frame,
-            text = 'Roll: %.4f, Pitch: %.4f, Yaw: %.4f' % (roll, pitch, yaw),
-            org = (int(self.width * 0.05), int(self.height * 0.05)),
-            fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-            fontScale=1.0,
-            color=COLOR_BLACK,
-            thickness=3,
-            lineType=cv2.LINE_4)
+        pitch, yaw, roll = self.PnP.get_roll_pitch_yaw()
+        cv2.putText(frame, 'Pitch : %.4f' % (pitch), (10, 30),  cv2.FONT_HERSHEY_SIMPLEX, 1, COLOR_BLACK, thickness=2, lineType=2)
+        cv2.putText(frame, 'Yaw   : %.4f' % (yaw),   (10, 80),  cv2.FONT_HERSHEY_SIMPLEX, 1, COLOR_BLACK, thickness=2, lineType=2)
+        cv2.putText(frame, 'Roll  : %.4f' % (roll),  (10, 130), cv2.FONT_HERSHEY_SIMPLEX, 1, COLOR_BLACK, thickness=2, lineType=2)
 
         cv2.imshow('Final', frame)
         cv2.waitKey(0)
